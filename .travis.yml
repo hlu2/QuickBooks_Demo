@@ -3,8 +3,8 @@ php:
 - 7.0
 - 5.6
 before_install:
-- php /home/travis/.phpenv/versions/5.6.25/bin/composer.phar self-update
+- composer self-update
 before_script:
 - composer install
 script:
-- phpunit --configuration phpunit.xml  
+- phpunit --configuration phpunit.xml
