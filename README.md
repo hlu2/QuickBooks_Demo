@@ -28,10 +28,10 @@ Installation
 ------------
 
 Use the following Composer command to install the
-API client from [the Bigcommerce vendor on Packagist](https://packagist.org/packages/bigcommerce/api):
+API client from [the Intuit vendor on Packagist](https://packagist.org/packages/bigcommerce/api):
 
 ~~~shell
- $ composer require bigcommerce/api
+ $ composer require hlu2/quick-books_demo
  $ composer update
 ~~~
 
