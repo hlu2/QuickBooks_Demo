@@ -1,4 +1,4 @@
-# QuickBooks API PHP SDK Change Test
+# QuickBooks API PHP SDK
 =====================
 
 PHP client for connecting to the QuickBooks Online V3 REST API.
