@@ -7,8 +7,8 @@ To find out more, visit the official documentation website:
 http://developer.intuit.com/
 
 ![Build status](https://travis-ci.org/hlu2/QuickBooks_Demo.svg?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/bigcommerce/api/v/stable.png)](https://packagist.org/packages/hlu2/quick-books_demo)
-[![Total Downloads](https://poser.pugx.org/bigcommerce/api/downloads.png)](https://packagist.org/packages/hlu2/quick-books_demo)
+[![Latest Stable Version](https://poser.pugx.org/hlu2/quick-books_demo/v/stable)](https://packagist.org/packages/hlu2/quick-books_demo)
+[![Total Downloads](https://poser.pugx.org/hlu2/quick-books_demo/downloads)](https://packagist.org/packages/hlu2/quick-books_demo)
 
 Requirements
 ------------
