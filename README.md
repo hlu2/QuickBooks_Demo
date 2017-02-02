@@ -9,6 +9,8 @@ http://developer.intuit.com/
 ![Build status](https://travis-ci.org/hlu2/QuickBooks_Demo.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/bigcommerce/bigcommerce-api-php/badge.png?branch=master)](https://coveralls.io/r/bigcommerce/bigcommerce-api-php?branch=master)
 [![Dependency Status](https://www.versioneye.com/package/php--bigcommerce--api/badge.png)](https://www.versioneye.com/package/php--bigcommerce--api)
+[![Latest Stable Version](https://poser.pugx.org/bigcommerce/api/v/stable.png)](https://packagist.org/packages/hlu2/quick-books_demo)
+[![Total Downloads](https://poser.pugx.org/bigcommerce/api/downloads.png)](https://packagist.org/packages/hlu2/quick-books_demo)
 
 Requirements
 ------------
