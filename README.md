@@ -203,4 +203,7 @@ else {
 
 See our Tool documentation for more information: https://developer.intuit.com/docs/0100_quickbooks_online/0400_tools/0005_sdks/0209_php
 
+More Examples
+----------------------------
+We provide CRUD(create, read, update and delete) examples in the SDK. You can go to PHP_CRUD_OPERATIONS folders to find all examples)
 
