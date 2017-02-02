@@ -3,7 +3,7 @@
     "description": "The demo for QuickBooks PHP Open Source Release",
     "type": "library",
     "require": {
-        "php": ">=5.6.25",
+        "php": ">=5.6.0",
         "ext-OAuth": "*"
     },
     "require-dev": {
