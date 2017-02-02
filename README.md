@@ -28,7 +28,7 @@ Installation
 ------------
 
 Use the following Composer command to install the
-API client from [the Intuit vendor on Packagist](https://packagist.org/packages/bigcommerce/api):
+API client from [the Intuit vendor on Packagist](https://packagist.org/packages/hlu2/quick-books_demo):
 
 ~~~shell
  $ composer require hlu2/quick-books_demo
@@ -43,217 +43,132 @@ You can also install composer for your specific project by running the following
  $ composer install
 ~~~
 
-Namespace
----------
-
-All the examples below assume the `Bigcommerce\Api\Client` class is imported
-into the scope with the following namespace declaration:
-
-~~~php
-use Bigcommerce\Api\Client as Bigcommerce;
-~~~
-
 Configuration
 -------------
 
-To use the API client in your PHP code, ensure that you can access `Bigcommerce\Api`
+To use the PHP SDK in your PHP code, ensure that you can access `src/sdk.config`
 in your autoload path (using Composer’s `vendor/autoload.php` hook is recommended).
 
 Provide your credentials to the static configuration hook to prepare the API client
 for connecting to a store on the Bigcommerce platform:
 
-### Basic Auth
+
+### OAuth 1.0
 ~~~php
-Bigcommerce::configure(array(
-	'store_url' => 'https://store.mybigcommerce.com',
-	'username'	=> 'admin',
-	'api_key'	=> 'd81aada4xc34xx3e18f0xxxx7f36ca'
-));
+$requestValidator = new OAuthRequestValidator(ConfigurationManager::AppSettings('AccessToken'),
+                                              ConfigurationManager::AppSettings('AccessTokenSecret'),
+                                              ConfigurationManager::AppSettings('ConsumerKey'),
+                                              ConfigurationManager::AppSettings('ConsumerSecret'));
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
 ~~~
 
-### OAuth
-~~~php
-Bigcommerce::configure(array(
-    'client_id' => 'xxxxxxxx',
-    'auth_token' => 'xxxxxxx',
-    'store_hash' => 'xxxxxxx'
-));
-~~~
-
-Connecting to the store
+Connecting to the QuickBooks Online API
 -----------------------
 
 To test that your configuration was correct and you can successfully connect to
-the store, ping the getTime method which will return a DateTime object
-representing the current timestamp of the store if successful or false if
-unsuccessful:
+the store, Provide Some methods for the PHP SDK to test connections:
 
 ~~~php
-$ping = Bigcommerce::getTime();
+//To be Implemented, call getTime()
 
 if ($ping) echo $ping->format('H:i:s');
 ~~~
 
-Accessing collections and resources (GET)
+Accessing collections and resources (QUERY)
 -----------------------------------------
 
-To list all the resources in a collection:
+To find all customers in QuickBooks Online:
 
 ~~~php
-$products = Bigcommerce::getProducts();
-
-foreach ($products as $product) {
-	echo $product->name;
-	echo $product->price;
-}
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+if (!$serviceContext)
+	exit("Problem while initializing ServiceContext.\n");
+// Prep Data Services
+$dataService = new DataService($serviceContext);
+if (!$dataService)
+	exit("Problem while initializing DataService.\n");
+// Run a query
+$entities = $dataService->Query("SELECT * FROM Customer");
 ~~~
 
-To access a single resource and its connected sub-resources:
+To find a company by its id:
 
 ~~~php
-$product = Bigcommerce::getProduct(11);
-
-echo $product->name;
-echo $product->price;
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+if (!$serviceContext)
+	exit("Problem while initializing ServiceContext.\n");
+// Prep Data Services
+$dataService = new DataService($serviceContext);
+if (!$dataService)
+	exit("Problem while initializing DataService.\n");
+$allCompanies = $dataService->FindAll('CompanyInfo');
 ~~~
 
-To view the total count of resources in a collection:
-
-~~~php
-$count = Bigcommerce::getProductsCount();
-
-echo $count;
-~~~
-Paging and Filtering
---------------------
-
-All the default collection methods support paging, by passing
-the page number to the method as an integer:
-
-~~~php
-$products = Bigcommerce::getProducts(3);
-~~~
-If you require more specific numbering and paging, you can explicitly specify
-a limit parameter:
-
-~~~php
-$filter = array("page" => 3, "limit" => 30);
-
-$products = Bigcommerce::getProducts($filter);
-~~~
-
-To filter a collection, you can also pass parameters to filter by as key-value
-pairs:
-
-~~~php
-$filter = array("is_featured" => true);
-
-$featured = Bigcommerce::getProducts($filter);
-~~~
-See the API documentation for each resource for a list of supported filter
-parameters.
-
-Updating existing resources (PUT)
+Update existing resources (PUT)
 ---------------------------------
 
 To update a single resource:
 
 ~~~php
-$product = Bigcommerce::getProduct(11);
-
-$product->name = "MacBook Air";
-$product->price = 99.95;
-$product->update();
-~~~
-
-You can also update a resource by passing an array or stdClass object of fields
-you want to change to the global update method:
-
-~~~php
-$fields = array(
-	"name"  => "MacBook Air",
-	"price" => 999.95
-);
-
-Bigcommerce::updateProduct(11, $fields);
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+if (!$serviceContext)
+	exit("Problem while initializing ServiceContext.\n");
+// Prep Data Services
+$dataService = new DataService($serviceContext);
+if (!$dataService)
+	exit("Problem while initializing DataService.\n");
+// Add a customer
+$customerObj = new IPPCustomer();
+$customerObj->Name = "Name" . rand();
+$customerObj->CompanyName = "CompanyName" . rand();
+$customerObj->GivenName = "GivenName" . rand();
+$customerObj->DisplayName = "DisplayName" . rand();
+$resultingCustomerObj = $dataService->Add($customerObj);
 ~~~
 
 Creating new resources (POST)
 -----------------------------
 
-Some resources support creation of new items by posting to the collection. This
-can be done by passing an array or stdClass object representing the new
-resource to the global create method:
+Here is an example how to create Customer, it is similar to Update a Customer:
 
 ~~~php
-$fields = array(
-	"name" => "Apple"
-);
-
-Bigcommerce::createBrand($fields);
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+if (!$serviceContext)
+	exit("Problem while initializing ServiceContext.\n");
+// Prep Data Services
+$dataService = new DataService($serviceContext);
+if (!$dataService)
+	exit("Problem while initializing DataService.\n");
+// Add a customer
+$customerObj = new IPPCustomer();
+$customerObj->Name = "Name" . rand();
+$customerObj->CompanyName = "CompanyName" . rand();
+$customerObj->GivenName = "GivenName" . rand();
+$customerObj->DisplayName = "DisplayName" . rand();
+$resultingCustomerObj = $dataService->Add($customerObj);
 ~~~
 
-You can also create a resource by making a new instance of the resource class
-and calling the create method once you have set the fields you want to save:
-
-~~~php
-$brand = new Bigcommerce\Api\Resources\Brand();
-
-$brand->name = "Apple";
-$brand->create();
-~~~
 
 Deleting resources and collections (DELETE)
 -------------------------------------------
 
-To delete a single resource you can call the delete method on the resource object:
+To delete a single resource you can call the delete method on the dataService object:
 
 ~~~php
-$category = Bigcommerce::getCategory(22);
-$category->delete();
-~~~
+$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+if (!$serviceContext)
+	exit("Problem while initializing ServiceContext.\n");
+// Prep Data Services
+$dataService = new DataService($serviceContext);
+if (!$dataService)
+	exit("Problem while initializing DataService.\n");
+// Create a new Purchase Object
+$randomPurchaseObj = CreatePurchaseObj($dataService);
+$purchaseObjConfirmation = $dataService->Add($randomPurchaseObj);
+echo "Created Purchase object, and received Id={$purchaseObjConfirmation->Id}\n";
+// Delete the recently-created Purchase Object
+$crudResultObj = $dataService->Delete($purchaseObjConfirmation);
 
-You can also delete resources by calling the global wrapper method:
-
-~~~php
-Bigcommerce::deleteCategory(22);
-~~~
-
-Some resources support deletion of the entire collection. You can use the
-deleteAll methods to do this:
-
-~~~php
-Bigcommerce::deleteAllOptionSets();
-~~~
-
-Using The XML API
------------------
-
-By default, the API client handles requests and responses by converting between
-JSON strings and their PHP object representations. If you need to work with XML
-you can switch the API into XML mode with the useXml method:
-
-~~~php
-Bigcommerce::useXml();
-~~~
-
-This will configure the API client to use XML for all subsequent requests. Note
-that the client does not convert XML to PHP objects. In XML mode, all object
-parameters to API create and update methods must be passed as strings
-containing valid XML, and all responses from collection and resource methods
-(including the ping, and count methods) will return XML strings instead of PHP
-objects. An example transaction using XML would look like:
-
-~~~php
-Bigcommerce::useXml();
-
-$xml = "<?xml version="1.0" encoding="UTF-8"?>
-		<brand>
-		 	<name>Apple</name>
-		 	<search_keywords>computers laptops</search_keywords>
-		</brand>";
-
-$result = Bigcommerce::createBrand($xml);
 ~~~
 
 Handling Errors And Timeouts
@@ -270,60 +185,22 @@ This would most often be when you tried to save some data that did not validate
 correctly.
 
 ~~~php
-$orders = Bigcommerce::getOrders();
-
-if (!$orders) {
-	$error = Bigcommerce::getLastError();
-	echo $error->code;
-	echo $error->message;
+$resultingCustomerObj = $dataService->Add($customerObj);
+$error = $dataService->getLastError();
+if ($error != null) {
+    echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+    echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+    echo "The Response message is: " . $error->getResponseBody() . "\n";
+}
+else {
+    # code...
+    // Echo some formatted output
+    echo "Created Customer Id={$resultingCustomerObj->Id}. Reconstructed response body:\n\n";
+    $xmlBody = XmlObjectSerializer::getPostXmlFromArbitraryEntity($resultingCustomerObj, $urlResource);
+    echo $xmlBody . "\n";
 }
 ~~~
 
-Returning false on errors, and using error objects to provide context is good
-for writing quick scripts but is not the most robust solution for larger and
-more long-term applications.
-
-An alternative approach to error handling is to configure the API client to
-throw exceptions when errors occur. Bear in mind, that if you do this, you will
-need to catch and handle the exception in code yourself. The exception throwing
-behavior of the client is controlled using the failOnError method:
-
-~~~php
-Bigcommerce::failOnError();
-
-try {
-	$orders = Bigcommerce::getOrders();
-
-} catch(Bigcommerce\Api\Error $error) {
-	echo $error->getCode();
-	echo $error->getMessage();
-}
-~~~
-
-The exceptions thrown are subclasses of Error, representing
-client errors and server errors. The API documentation for response codes
-contains a list of all the possible error conditions the client may encounter.
+See our Tool documentation for more information: https://developer.intuit.com/docs/0100_quickbooks_online/0400_tools/0005_sdks/0209_php
 
 
-Verifying SSL certificates
---------------------------
-
-By default, the client will attempt to verify the SSL certificate used by the
-Bigcommerce store. In cases where this is undesirable, or where an unsigned
-certificate is being used, you can turn off this behavior using the verifyPeer
-switch, which will disable certificate checking on all subsequent requests:
-
-~~~php
-Bigcommerce::verifyPeer(false);
-~~~
-
-Connecting through a proxy server
----------------------------------
-
-In cases where you need to connect to the API through a proxy server, you may
-need to configure the client to recognize this. Provide the URL of the proxy
-server and (optionally) a port to the useProxy method:
-
-~~~php
-Bigcommerce::useProxy("http://proxy.example.com", 81);
-~~~
