@@ -16,20 +16,13 @@ Requirements
 - PHP 5.6 or greater
 - PHP OAuth 1.2.3 extension enabled
 
-**To connect to the API with basic auth you need the following:**
+**To connect to the API with OAuth1 you need the following:**
 
-- Secure URL pointing to a Bigcommerce store
-- Username of an authorized admin user of the store
-- API key for the user
+- Account with developer.intuit.com
+- Consumer keys and Consumer secrets in your app for starting OAuth 1 flow
+- Access Token and Access Token Secrets
 
-To generate an API key, go to Control Panel > Users > Edit User and make sure
-the 'Enable the XML API?' is ticked.
-
-**To connect to the API with OAuth you will need the following:**
-
-- client_id
-- auth_token
-- store_hash
+To generate OAuth Access Token and Access Token Secrets, refer to our documentation here: https://developer.intuit.com/docs/0100_quickbooks_online/0100_essentials/000500_authentication_and_authorization/connect_from_within_your_app
 
 Installation
 ------------
