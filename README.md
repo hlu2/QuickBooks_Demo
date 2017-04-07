@@ -19,39 +19,44 @@ Requirements
 **To connect to the API with OAuth1 you need the following:**
 
 - Account with developer.intuit.com
-- Consumer keys and Consumer secrets in your app for starting OAuth 1 flow
+- Consumer keys and Consumer secrets in your app for starting OAuth 1.0a flow
 - Access Token and Access Token Secrets
 
 To generate OAuth Access Token and Access Token Secrets, refer to our documentation here: https://developer.intuit.com/docs/0100_quickbooks_online/0100_essentials/000500_authentication_and_authorization/connect_from_within_your_app
+
+We also suggest you play with OAuth playground: 
+https://appcenter.intuit.com/Playground/OAuth/IA/
+
+You can use it generate access tokens for either QuickBooks Online production or sandbox. 
+
 
 Installation
 ------------
 
 Use the following Composer command to install the
-API client from [the Intuit vendor on Packagist](https://packagist.org/packages/hlu2/quick-books_demo):
+API client from [the Intuit vendor on Packagist](composer require quickbooks/v3-php-sdk):
 
 ~~~shell
- $ composer require hlu2/quick-books_demo
+ $ composer require quickbooks/v3-php-sdk
  $ composer update
 ~~~
 
-You can also install composer for your specific project by running the following in the library folder.
-
-~~~shell
- $ curl -sS https://getcomposer.org/installer | php
- $ php composer.phar install
- $ composer install
-~~~
+If you are not familiar with Composer. Please read the introduction guide for Composer here:
+https://getcomposer.org/doc/00-intro.md
 
 Configuration
 -------------
 
-To use the PHP SDK in your PHP code, ensure that you can access `src/sdk.config`
-in your autoload path (using Composer’s `vendor/autoload.php` hook is recommended).
+To use Class library, put: 
 
-Provide your credentials to the static configuration hook to prepare the API client
-for connecting to a store on the Bigcommerce platform:
+~~~php
+require "vendor/autoload.php";
+~~~
 
+As the first line in your PHP Script before calling other libraries/Classes.
+(You can declare your own spl autoloader; however, using Composer’s `vendor/autoload.php` hook is recommended).
+
+There are two ways to provide static configration for prepare the context for API call:
 
 ### OAuth 1.0
 ~~~php
