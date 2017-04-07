@@ -56,15 +56,24 @@ require "vendor/autoload.php";
 As the first line in your PHP Script before calling other libraries/Classes.
 (You can declare your own spl autoloader; however, using Composer’s `vendor/autoload.php` hook is recommended).
 
-There are two ways to provide static configration for prepare the context for API call:
+There are two ways to provide static configration for prepare the service context for API call:
 
 ### OAuth 1.0
+Pass the OAuth configuration as an array:
 ~~~php
-$requestValidator = new OAuthRequestValidator(ConfigurationManager::AppSettings('AccessToken'),
-                                              ConfigurationManager::AppSettings('AccessTokenSecret'),
-                                              ConfigurationManager::AppSettings('ConsumerKey'),
-                                              ConfigurationManager::AppSettings('ConsumerSecret'));
-$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
+$dataService = DataService::Configure(array(
+         	  'auth_mode' => 'oauth1',
+		  'consumerKey' => "qyprdUSoVpIHrtBp0eDMTHGz8UXuSz",
+		  'consumerSecret' => "TKKBfdlU1I1GEqB9P3AZlybdC8YxW5qFSbuShkG7",
+		  'accessTokenKey' => "lvprdePgDHR4kSxxC7KFb8sy84TjQMVJrbITqyeaRAwBrLuq",
+		  'accessTokenSecret' => "VRm1nrr17JL1RhPAFGgEjepxWeSUbGGsOwsjrKLP",
+		  'QBORealmID' => "123145812836282"
+));
+~~~
+
+or you use the sdk.config file as the config file for preparing service context. You will need to pass the path of config file explicitly:
+~~~php
+$dataService = DataService::Configure("/Your/Path/To/sdk.config");
 ~~~
 
 Connecting to the QuickBooks Online API
