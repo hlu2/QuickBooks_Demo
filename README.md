@@ -140,7 +140,7 @@ else {
 Update existing resources (PUT)
 ---------------------------------
 
-To update a single resource:
+To update a single resource, you will need to read the resource first and then update it:
 
 ~~~php
 $serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
@@ -165,20 +165,39 @@ Creating new resources (POST)
 Here is an example how to create Customer, it is similar to Update a Customer:
 
 ~~~php
-$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
-if (!$serviceContext)
-	exit("Problem while initializing ServiceContext.\n");
-// Prep Data Services
-$dataService = new DataService($serviceContext);
-if (!$dataService)
-	exit("Problem while initializing DataService.\n");
-// Add a customer
+// Same as adding a customer before
+....
 $customerObj = new IPPCustomer();
 $customerObj->Name = "Name" . rand();
 $customerObj->CompanyName = "CompanyName" . rand();
 $customerObj->GivenName = "GivenName" . rand();
 $customerObj->DisplayName = "DisplayName" . rand();
 $resultingCustomerObj = $dataService->Add($customerObj);
+$error = $dataService->getLastError();
+if ($error != null) {
+    echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+    echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+    echo "The Response message is: " . $error->getResponseBody() . "\n";
+}
+else {
+    echo "Created Customer Id={$resultingCustomerObj->Id}. Reconstructed response body:\n\n";
+    $xmlBody = XmlObjectSerializer::getPostXmlFromArbitraryEntity($resultingCustomerObj, $urlResource);
+    echo $xmlBody . "\n";
+}
+
+// Update Customer Obj
+$resultingCustomerObj->GivenName = "New Name " . rand();
+$resultingCustomerUpdatedObj = $dataService->Add($resultingCustomerObj);
+if ($error != null) {
+    echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+    echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+    echo "The Response message is: " . $error->getResponseBody() . "\n";
+}
+else {
+    echo "Created Customer Id={$resultingCustomerObj->Id}. Reconstructed response body:\n\n";
+    $xmlBody = XmlObjectSerializer::getPostXmlFromArbitraryEntity($resultingCustomerObj, $urlResource);
+    echo $xmlBody . "\n";
+}
 ~~~
 
 
