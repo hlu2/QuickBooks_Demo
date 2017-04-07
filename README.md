@@ -88,35 +88,54 @@ the store, Provide Some methods for the PHP SDK to test connections:
 if ($ping) echo $ping->format('H:i:s');
 ~~~
 
-Accessing collections and resources (QUERY)
+Create new resources (PUT)
 -----------------------------------------
 
-To find all customers in QuickBooks Online:
+To create a Customer in QuickBooks Online:
 
 ~~~php
-$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
-if (!$serviceContext)
-	exit("Problem while initializing ServiceContext.\n");
-// Prep Data Services
-$dataService = new DataService($serviceContext);
+<?php
+require "vendor/autoload.php";
+
+use QuickBooksOnline\API\DataService\DataService;
+use QuickBooksOnline\API\Core\Http\Serialization\XmlObjectSerializer;
+use QuickBooksOnline\API\Data\IPPCustomer;
+
+
+$dataService = DataService::Configure(array(
+	         'auth_mode' => 'oauth1',
+		 'consumerKey' => "Your Cosumer Key",
+		 'consumerSecret' => "Your Consumer secrets",
+		 'accessTokenKey' => "Your Access Token",
+		 'accessTokenSecret' => "Your Access Token Secrets",
+		 'QBORealmID' => "193514489870599",
+		 'baseUrl' => "https://sandbox.api.intuit.com/"
+));
+
 if (!$dataService)
 	exit("Problem while initializing DataService.\n");
-// Run a query
-$entities = $dataService->Query("SELECT * FROM Customer");
+
+// Add a customer
+$customerObj = new IPPCustomer();
+$customerObj->Name = "Name" . rand();
+$customerObj->CompanyName = "CompanyName" . rand();
+$customerObj->GivenName = "GivenName" . rand();
+$customerObj->DisplayName = "DisplayName" . rand();
+$resultingCustomerObj = $dataService->Add($customerObj);
+$error = $dataService->getLastError();
+if ($error != null) {
+    echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
+    echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
+    echo "The Response message is: " . $error->getResponseBody() . "\n";
+}
+else {
+    echo "Created Customer Id={$resultingCustomerObj->Id}. Reconstructed response body:\n\n";
+    $xmlBody = XmlObjectSerializer::getPostXmlFromArbitraryEntity($resultingCustomerObj, $urlResource);
+    echo $xmlBody . "\n";
+}
+?>
 ~~~
 
-To find a company by its id:
-
-~~~php
-$serviceContext = new ServiceContext($realmId, $serviceType, $requestValidator);
-if (!$serviceContext)
-	exit("Problem while initializing ServiceContext.\n");
-// Prep Data Services
-$dataService = new DataService($serviceContext);
-if (!$dataService)
-	exit("Problem while initializing DataService.\n");
-$allCompanies = $dataService->FindAll('CompanyInfo');
-~~~
 
 Update existing resources (PUT)
 ---------------------------------
